@@ -2,13 +2,14 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"lab1/model"
 	"net/http"
 	"time"
+
+	w "github.com/golang-jwt/jwt/v5"
 )
 
 type Handler struct {
@@ -47,14 +48,14 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	claims := jwt.MapClaims{
+	claims := w.MapClaims{
 		"user_id": user.ID,
 		"login":   user.Login,
 		"exp":     time.Now().Add(h.TokenTTL).Unix(),
 		"iat":     time.Now().Unix(),
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := w.NewWithClaims(w.SigningMethodHS256, claims)
 	ss, err := token.SignedString(h.JWTSecret)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to sign token"})

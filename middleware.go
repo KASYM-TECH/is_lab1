@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	w "github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"strings"
 )
@@ -24,8 +24,8 @@ func jwtMiddleware() gin.HandlerFunc {
 		tokenString := parts[1]
 
 		claims := &Claims{}
-		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		token, err := w.ParseWithClaims(tokenString, claims, func(token *w.Token) (interface{}, error) {
+			if _, ok := token.Method.(*w.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method")
 			}
 			return jwtSecret, nil
