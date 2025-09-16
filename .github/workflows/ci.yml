@@ -1,74 +1,78 @@
-name: CI/CD
+name: CI/CD Pipeline with Security Scanning
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [ main, master ]
 
 jobs:
-  # -------------------------------
-  # Job: Setup
-  # -------------------------------
-  setup:
-    name: Setup Go Modules
+  security-scanning:
     runs-on: ubuntu-latest
-    outputs:
-      go-mod-timestamp: ${{ steps.go-mod.outputs.timestamp }}
+
+    strategy:
+      matrix:
+        go-version: [1.25]
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Updated from v3 to v4
+        uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Setup Go ${{ matrix.go-version }}
         uses: actions/setup-go@v4
         with:
-          go-version: 1.25
+          go-version: ${{ matrix.go-version }}
 
-      - name: Cache Go modules
-        uses: actions/cache@v3
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Run go vet for static analysis
+        run: go vet ./...
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v4
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          version: v1.57.0
+          args: run --out-format=json --timeout=5m
+          # Generates report in JSON format
+          output: golangci-lint-report.json
 
-      - name: Download dependencies
-        run: go mod download
+      - name: Run Gosec for security scanning
+        uses: securego/gosec-action@v2
+        with:
+          args: ./...
+          format: json
+          out: gosec-report.json
 
-  # -------------------------------
-  # Job: Tests
-  # -------------------------------
-  test:
-    name: Run Tests
+      - name: Upload golangci-lint report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golangci-lint-report
+          path: ${{ github.workspace }}/golangci-lint-report.json
+
+      - name: Upload Gosec report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gosec-report
+          path: ${{ github.workspace }}/gosec-report.json
+
+  test-api:
     runs-on: ubuntu-latest
-    needs: setup
+    needs: security-scanning
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Updated from v3 to v4
+        uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.25
+          go-version: '1.25'
+
+      - name: Install dependencies
+        run: go mod tidy
 
       - name: Run tests
-        run: go test -v ./...
-
-  # -------------------------------
-  # Job: Build
-  # -------------------------------
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.25
-
-      - name: Build binary
-        run: go build -o myapp
+        run: go test ./... -v
