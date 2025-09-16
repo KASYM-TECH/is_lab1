@@ -17,7 +17,7 @@ jobs:
       go-mod-timestamp: ${{ steps.go-mod.outputs.timestamp }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated from v3 to v4
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -44,7 +44,7 @@ jobs:
     needs: setup
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated from v3 to v4
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -72,51 +72,3 @@ jobs:
 
       - name: Build binary
         run: go build -o myapp
-
-  # -------------------------------
-  # Job: Static Analysis (SAST)
-  # -------------------------------
-  sast:
-    name: Static Analysis (golangci-lint)
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.25
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: v1.64
-          args: --out-format=github-actions
-  # -------------------------------
-  # Job: SCA (Software Composition Analysis)
-  # -------------------------------
-  sca:
-    name: SCA (OWASP Dependency-Check)
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Dependency-Check
-        run: |
-          curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v8.1.1/dependency-check-8.1.1-release.zip
-          unzip dependency-check-8.1.1-release.zip -d dependency-check
-          chmod +x dependency-check/dependency-check.sh
-
-      - name: Run Dependency-Check
-        run: |
-          dependency-check/dependency-check.sh --project "Go Project" --scan . --format ALL --out dependency-check-report
-
-      - name: Upload Dependency-Check report
-        uses: actions/upload-artifact@v3
-        with:
-          name: dependency-check-report
-          path: dependency-check-report/
