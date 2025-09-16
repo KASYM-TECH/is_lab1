@@ -1,0 +1,29 @@
+### 1) Login — получить JWT
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "login": "alice",
+  "password": "password123"
+}
+
+
+### 2) Get protected data — /api/data
+GET http://localhost:8080/api/data
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTgwNDkyMDAsImlhdCI6MTc1ODAyNzYwMCwibG9naW4iOiJhbGljZSIsInVzZXJfaWQiOjF9.60XOSF0vNIvc42ro2Vek9RliEjzUYW7_38XkaPKXbA8
+
+
+### 3) Get posts HTML — /posts
+GET http://localhost:8080/posts
+
+
+### 4) Create new post
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTgwNDkyMDAsImlhdCI6MTc1ODAyNzYwMCwibG9naW4iOiJhbGljZSIsInVzZXJfaWQiOjF9.60XOSF0vNIvc42ro2Vek9RliEjzUYW7_38XkaPKXbA8
+
+{
+  "title": "My New Post",
+  "content": "This is the post body."
+}
+
