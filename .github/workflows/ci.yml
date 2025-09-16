@@ -89,13 +89,11 @@ jobs:
         with:
           go-version: 1.25
 
-      - name: Install golangci-lint
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2
-
       - name: Run golangci-lint
-        run: ./bin/golangci-lint run --out-format=github-actions
-
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.64
+          args: --out-format=github-actions
   # -------------------------------
   # Job: SCA (Software Composition Analysis)
   # -------------------------------
