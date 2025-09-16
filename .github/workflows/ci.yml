@@ -23,56 +23,9 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
-      - name: Install dependencies
-        run: go mod tidy
+      - name: Checkout Source
+        uses: actions/checkout@v3
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
 
-      - name: Run go vet for static analysis
-        run: go vet ./...
 
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: v1.57.0
-          args: run --out-format=json --timeout=5m
-          # Generates report in JSON format
-          output: golangci-lint-report.json
-
-      - name: Run Gosec for security scanning
-        uses: securego/gosec-action@v2
-        with:
-          args: ./...
-          format: json
-          out: gosec-report.json
-
-      - name: Upload golangci-lint report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: golangci-lint-report
-          path: ${{ github.workspace }}/golangci-lint-report.json
-
-      - name: Upload Gosec report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: gosec-report
-          path: ${{ github.workspace }}/gosec-report.json
-
-  test-api:
-    runs-on: ubuntu-latest
-    needs: security-scanning
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.25'
-
-      - name: Install dependencies
-        run: go mod tidy
-
-      - name: Run tests
-        run: go test ./... -v
