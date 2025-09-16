@@ -7,6 +7,32 @@ on:
     branches: [ main, master ]
 
 jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/action@v2
+        with:
+          project: 'GoProject'
+          scan: './'  # Сканируем весь проект
+          format: 'ALL' # Генерируем HTML, XML, JSON отчеты
+          failOnCVSS: '7' # Workflow провалится при критических уязвимостях
+
+      - name: Upload Dependency-Check Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: dependency-check-report.*
+
   security-scanning:
     runs-on: ubuntu-latest
 
