@@ -29,7 +29,7 @@ jobs:
           args: -fmt=html -out=gosec-report.html ./...
 
       - name: Upload Gosec Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gosec-report
           path: gosec-report.html
