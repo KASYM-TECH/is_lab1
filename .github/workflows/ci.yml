@@ -7,31 +7,62 @@ on:
     branches: [ main, master ]
 
 jobs:
-  dependency-check:
+  setup:
+    name: Setup Go Modules
     runs-on: ubuntu-latest
+    outputs:
+      go-mod-timestamp: ${{ steps.go-mod.outputs.timestamp }}
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          go-version: 1.25
 
-      - name: Run OWASP Dependency-Check
-        uses: dependency-check/action@v2
+      - name: Cache Go modules
+        uses: actions/cache@v3
         with:
-          project: 'GoProject'
-          scan: './'  # Сканируем весь проект
-          format: 'ALL' # Генерируем HTML, XML, JSON отчеты
-          failOnCVSS: '7' # Workflow провалится при критических уязвимостях
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-      - name: Upload Dependency-Check Report
-        uses: actions/upload-artifact@v4
+      - name: Download dependencies
+        run: go mod download
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          name: dependency-check-report
-          path: dependency-check-report.*
+          go-version: 1.25
+
+      - name: Run tests
+        run: go test -v ./...
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.25
+
+      - name: Build binary
+        run: go build -o myapp
 
   security-scanning:
     runs-on: ubuntu-latest
@@ -59,3 +90,11 @@ jobs:
         with:
           name: gosec-report
           path: gosec-report.html
+
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'test'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
