@@ -1,0 +1,44 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build output
+*.test
+*.out
+*.log
+
+# Go build artifacts
+*.a
+*.o
+
+# Compiled binary (if you run `go build`)
+/bin/
+/build/
+/dist/
+
+# Dependency directories (when using vendoring)
+vendor/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage.out
+*.coverprofile
+*.lcov
+
+# Environment / config
+.env
+*.local
