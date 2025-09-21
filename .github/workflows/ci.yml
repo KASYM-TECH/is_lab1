@@ -103,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
-          path: dependency-check-report.html
+          path: reports
 
   lint:
     name: Lint
