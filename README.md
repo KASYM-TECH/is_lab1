@@ -2,6 +2,7 @@
 
 ### Аутентификация
 
+
 #### POST `/auth/login`
 метод для аутентификации пользователя (принимает
 логин и пароль).
@@ -236,26 +237,14 @@ func jwtMiddleware(jwtSecret []byte) gin.HandlerFunc {
 
 ## Отчеты безопасности
 
-### npm audit report
-
-<img width="449" height="132" alt="image" src="https://github.com/user-attachments/assets/a5fde753-cbf6-467c-9f07-c6146cda4ac0" />
-
-*Отчет показывает 0 уязвимостей высокого уровня критичности*
-
 ### OWASP Dependency Check
 
-<img width="1070" height="1205" alt="image" src="https://github.com/user-attachments/assets/4a926390-e106-41c7-abe5-5abbc2250e4d" />
+[dependency-check-report.html](dependency-check-report.html)
 
-**OWASP Dependency Check обнаружил уязвимость**
+*OWASP не обнаружил проблем безопасности*
 
-### ESLint Security Analysis
+### Gosec Security Analysis
 
-<img width="586" height="985" alt="image" src="https://github.com/user-attachments/assets/073c890c-ee30-422f-b5a1-0cccfb73a89d" />
+[gosec-report.html](gosec-report.html)
 
-*ESLint с security plugin не обнаружил проблем безопасности*
-
-### Test Results
-
-<img width="832" height="332" alt="image" src="https://github.com/user-attachments/assets/fc554eac-7ee3-4e2d-bab6-2b5e92edf011" />
-
-*Все тесты проходят успешно, включая security-тесты*
+*gosec не обнаружил проблем безопасности*
