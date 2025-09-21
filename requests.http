@@ -10,17 +10,18 @@ Content-Type: application/json
 
 ### 2) Get protected data — /api/data
 GET http://localhost:8080/api/data
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTgwNDkyMDAsImlhdCI6MTc1ODAyNzYwMCwibG9naW4iOiJhbGljZSIsInVzZXJfaWQiOjF9.60XOSF0vNIvc42ro2Vek9RliEjzUYW7_38XkaPKXbA8
+Authorization: Bearer <your_jwt_token>
 
 
 ### 3) Get posts HTML — /posts
 GET http://localhost:8080/posts
+Authorization: Bearer <your_jwt_token>
 
 
 ### 4) Create new post
 POST http://localhost:8080/api/posts
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTgwNDkyMDAsImlhdCI6MTc1ODAyNzYwMCwibG9naW4iOiJhbGljZSIsInVzZXJfaWQiOjF9.60XOSF0vNIvc42ro2Vek9RliEjzUYW7_38XkaPKXbA8
+Authorization: Bearer <your_jwt_token>
 
 {
   "title": "My New Post",

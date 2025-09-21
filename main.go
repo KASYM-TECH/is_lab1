@@ -51,15 +51,15 @@ CREATE TABLE IF NOT EXISTS posts (
 		return fmt.Errorf("failed to seed demo data: %w", err)
 	}
 
-	h := NewHandler(db, []byte(os.Getenv("JWT_SECRET")), 6*time.Hour)
+	h := NewHandler(db, []byte(os.Getenv("JWT_SECRET")), 1*time.Hour)
 
 	r := gin.Default()
 
 	r.POST("/auth/login", h.Login)
-	r.GET("/posts", h.ShowPosts)
 
-	api := r.Group("/api", jwtMiddleware())
+	api := r.Group("/api", jwtMiddleware([]byte(os.Getenv("JWT_SECRET"))))
 	{
+		r.GET("/posts", h.ShowPosts)
 		api.GET("/data", h.GetData)
 		api.POST("/posts", h.CreatePost)
 	}

@@ -99,6 +99,12 @@ jobs:
           format: 'HTML'
           out: 'reports'
 
+      - name: Upload dependency-check report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: dependency-check-report.html
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

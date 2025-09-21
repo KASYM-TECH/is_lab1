@@ -9,7 +9,7 @@ import (
 )
 
 // jwtMiddleware verifies Bearer token and sets user info in context
-func jwtMiddleware() gin.HandlerFunc {
+func jwtMiddleware(jwtSecret []byte) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("Authorization")
 		if auth == "" {

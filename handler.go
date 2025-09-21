@@ -102,17 +102,7 @@ func (h *Handler) CreatePost(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"post": post})
 }
 
-func (h *Handler) ShowPosts(c *gin.Context) {
-	c.Header("Content-Security-Policy", "default-src 'self'; script-src 'none'; object-src 'none'; frame-ancestors 'none';")
-
-	var posts []model.Post
-	query := `SELECT id, author, title, content, created_at FROM posts ORDER BY created_at DESC`
-	if err := h.DB.Select(&posts, query); err != nil {
-		c.String(http.StatusInternalServerError, "db error")
-		return
-	}
-
-	tmpl := template.Must(template.New("posts").Parse(`
+const temp = `
 <!doctype html>
 <html>
 <head><meta charset="utf-8"><title>Posts</title></head>
@@ -125,6 +115,18 @@ func (h *Handler) ShowPosts(c *gin.Context) {
 {{end}}
 </body>
 </html>
-`))
+`
+
+func (h *Handler) ShowPosts(c *gin.Context) {
+	c.Header("Content-Security-Policy", "default-src 'self'; script-src 'none'; object-src 'none'; frame-ancestors 'none';")
+
+	var posts []model.Post
+	query := `SELECT id, author, title, content, created_at FROM posts ORDER BY created_at DESC`
+	if err := h.DB.Select(&posts, query); err != nil {
+		c.String(http.StatusInternalServerError, "db error")
+		return
+	}
+
+	tmpl := template.Must(template.New("posts").Parse(temp))
 	_ = tmpl.Execute(c.Writer, posts)
 }
