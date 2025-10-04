@@ -61,7 +61,6 @@ jobs:
         with:
           go-version: 1.25
 
-      # ---- GOSEC ----
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
         with:
@@ -73,17 +72,16 @@ jobs:
           name: gosec-report
           path: gosec-report.html
 
-      # ---- GOVULNCHECK ----
-      - name: Run govulncheck (Go dependency scanner)
+      - name: Run govulncheck (detailed JSON report)
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
-          govulncheck ./... > govulncheck-report.txt
+          govulncheck -json ./... > govulncheck-report.json
 
       - name: Upload govulncheck Report
         uses: actions/upload-artifact@v4
         with:
           name: govulncheck-report
-          path: govulncheck-report.txt
+          path: govulncheck-report.json
 
   lint:
     name: Lint
