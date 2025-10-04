@@ -231,17 +231,18 @@ func jwtMiddleware(jwtSecret []byte) gin.HandlerFunc {
 ### Запускаемые проверки
 
 1. **gosec** - Проверка уязвимостей в зависимостях
-3. **OWASP Dependency Check** - Анализ зависимостей
+3. **govulncheck** - govulncheck (официальный инструмент от Go Team для анализа зависимостей) 
 4. **golangci-lint** - Статический анализ кода (linter)
 5. **Go tests* - Unit тесты
 
 ## Отчеты безопасности
 
-### OWASP Dependency Check
+### govulncheck
 
-[dependency-check-report.html](dependency-check-report.html)
+- [govulncheck-report.json](govulncheck-report.json) (полный отчет)
+- [govulncheck-report.txt](govulncheck-report.txt) (заключение)
 
-*OWASP не обнаружил проблем безопасности*
+*govulncheck не обнаружил проблем безопасности*
 
 ### Gosec Security Analysis
 
