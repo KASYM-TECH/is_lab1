@@ -72,10 +72,10 @@ jobs:
           name: gosec-report
           path: gosec-report.html
 
-      - name: Run govulncheck (detailed JSON report)
+      - name: Run govulncheck (detailed text report)
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
-          govulncheck -json ./... > govulncheck-report.json
+          govulncheck -show=traces ./... > govulncheck-report.txt
 
       - name: Upload govulncheck Report
         uses: actions/upload-artifact@v4
