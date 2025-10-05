@@ -83,6 +83,24 @@ jobs:
           name: govulncheck-report
           path: govulncheck-report.txt
 
+      - name: Install Snyk CLI
+        run: |
+          curl -sL https://snyk.io/install.sh | bash
+          snyk --version
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk Dependency Scan
+        run: |
+          snyk test --file=go.mod --package-manager=gomod --json > snyk-report.json || true
+
+      - name: Upload Snyk Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-report
+          path: snyk-report.json
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
