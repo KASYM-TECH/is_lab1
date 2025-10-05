@@ -93,7 +93,7 @@ jobs:
 
       - name: Run Snyk Dependency Scan
         run: |
-          snyk test --file=go.mod --package-manager=gomod --json > snyk-report.json || true
+          snyk test --file=go.mod --package-manager=gomodules --json > snyk-report.json || true
 
       - name: Upload Snyk Report
         uses: actions/upload-artifact@v4
